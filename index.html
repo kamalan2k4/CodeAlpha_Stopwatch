@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="watch">
+            <div class="outer-circle">
+                <div class="inner-circle">
+                    <span class="text m">0 :</span>
+                    <span class="text s">&nbsp; 0 :</span>
+                    <span class="text ms">&nbsp;0</span>
+                </div>
+            </div>
+            <div class="button-wrapper">
+                <button class="button reset hidden"> Reset</button>
+                <button class="button play"> Play</button>
+                <button class="button lap hidden"> Lap</button>
+            </div>
+        </div>
+        <ul class="laps">
+            <button class="lap-clear hidden">Clear All</button>
+        </ul> 
+    </div>
+    <script>
+        const playButton =document.getElementsByClassName("play")[0];
+        const lapButton =document.getElementsByClassName("lap")[0];
+        const resetButton =document.getElementsByClassName("reset")[0];
+        const clearButton =document.getElementsByClassName("lap-clear")[0];
+        const minute =document.getElementsByClassName("m")[0];
+        const second =document.getElementsByClassName("s")[0];
+        const microsecond =document.getElementsByClassName("ms")[0];
+        const laps=document.getElementsByClassName("laps")[0];
+        const bg=document.getElementsByClassName("outer-circle")[0];
+        let isPlay=false;
+        let sec=0;
+        let se;
+        let ms=0;
+        let mis;
+        let mi;
+        let min=0;
+        let isreset=false;
+        let lapItem=0;
+        const toggleButton=()=>{
+            lapButton.classList.remove("hidden")
+            resetButton.classList.remove("hidden");
+
+        }
+        const play=()=>{
+            if(!isPlay && !isreset){
+                playButton.innerHTML='pause';
+                bg.classList.add("animation-bg");
+                mi= setInterval(() =>{
+                
+               minute.innerHTML=`${++min} :&nbsp; `;
+            },60*1000);
+               se= setInterval(() =>{
+                if(sec===60)
+                {
+                    sec=0;
+                }
+               second.innerHTML=`&nbsp;${++sec} : `;
+            },1000);
+            mis=setInterval(() =>{
+                if(ms===100)
+                {
+                    ms=0;
+                }
+               microsecond.innerHTML=`&nbsp;${++ms} `;
+            },10);
+                isPlay=true;
+                isreset=true;
+            }
+            else{
+                playButton.innerHTML='play';
+                clearInterval(mi);
+                clearInterval(se);
+                clearInterval(mis);
+                isPlay=false;
+                isreset=false;
+                bg.classList.remove("animation-bg");
+            }
+            toggleButton();
+        }
+        
+        const reset=()=>{
+            isreset=true;
+            play();
+            lapButton.classList.add("hidden");
+            resetButton.classList.add("hidden");
+            second.innerHTML='&nbsp;0 :'
+            microsecond.innerHTML='&nbsp;0';
+            minute.innerHTML='0 :';
+        }
+        const lap=()=>{
+            const li=document.createElement("li");
+            const number=document.createElement("span");
+            const timestamp=document.createElement("span"); 
+
+
+            li.setAttribute("class","lap-items");
+            number.setAttribute("class","number");
+            timestamp.setAttribute("class","timestamp");
+            
+            number.innerText=`#${++lapItem}`;
+            timestamp.innerHTML=`${min} : ${sec} : ${ms}`;
+
+            li.append(number, timestamp);
+            laps.append(li);
+
+            clearButton.classList.remove("hidden");
+            
+        } 
+        const clearAll=()=>{
+             laps.innerHTML='';
+             laps.append(clearButton);  
+             clearButton.classList.remove("hidden");
+             lapItem=0;
+        }
+        playButton.addEventListener("click",play);
+        resetButton.addEventListener("click",reset);
+        lapButton.addEventListener("click",lap);
+        clearButton.addEventListener("click",clearAll);
+
+
+    </script>
+    
+</body>
+</html>
